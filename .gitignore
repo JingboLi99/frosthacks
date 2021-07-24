@@ -19,3 +19,14 @@ doc/api/
 *.js_
 *.js.deps
 *.js.map
+
+#android studio
+*.iml
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+.externalNativeBuild
