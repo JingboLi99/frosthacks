@@ -1,87 +1,136 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flame/gestures.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/components/button.dart';
+import 'package:flutter_app/components/player.dart';
 
 class GamePlay extends StatelessWidget {
   GamePlay({Key key}) : super(key: key);
   final myGame = MyGame();
 
-  Widget pauseMenuBuilder(BuildContext buildContext, MyGame game) {
-    return Center(
-        child: Container(
-            width: 100,
-            height: 100,
-            color: const Color(0XFFFF0000),
-            child: const Center(
-              child: Text("Paused"),
-            )));
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: GameWidget(
-      game: myGame,
-      overlayBuilderMap: {'PauseMenu': pauseMenuBuilder},
-    ));
+    return Scaffold(body: GameWidget(game: myGame));
   }
 }
 
-class MyGame extends BaseGame with TapDetector {
-  static const int squareSpeed = 400;
+class MyGame extends BaseGame with HasTappableComponents {
+  //For the Player
+  Size screenSize;
+  Player player;
+
+  //For the Grid
+  double cardSize = 60;
+  double spacer = 20.0;
+  List<Button> grid = [];
+  List<Color> coloursChosen = [];
+
+  static const int squareSpeed = 200;
   Rect squarePos;
-  int squareDirection = 1;
-  SpriteComponent pauseButton;
-  final pauseButtonPosition = Vector2(0, 0);
-  final pauseButtonSize = Vector2(50, 50);
-  bool pauseButtonPressed = false;
-  int score = 0;
-
-  @override
-  Future<void> onLoad() async {
-    squarePos = Rect.fromLTWH(0, 0, 100, 100);
-
-    // renders pause button
-    final pauseSprite = await Sprite.load('pause.jpg');
-    pauseButton = SpriteComponent(size: pauseButtonSize, sprite: pauseSprite);
-    pauseButton.position = pauseButtonPosition;
-    add(pauseButton);
+  int squareDirection = -1;
+  MyGame() {
+    _buildHud();
   }
 
   static final squarePaint = BasicPalette.white.paint();
 
+  //to calculate screen size
+  void calScreenSize() {
+    screenSize = Size(canvasSize.toOffset().dx, canvasSize.toOffset().dy);
+  }
+
+  //grid creation method and helpers
+  void addGrid() {
+    double gridX = screenSize.width / 4;
+    double gridY = screenSize.height / 4 * 3;
+    Vector2 gridPosition = Vector2(gridX, gridY);
+    List<Color> colors = [Colors.red, Colors.blue, Colors.yellow];
+
+    for (var i = 0; i < 3; i++) {
+      //add color card to game
+      Button colouredButton = Button(Vector2.all(cardSize), colors[i]);
+      colouredButton.position = gridPosition;
+      grid.add(colouredButton);
+      add(colouredButton);
+
+      //increase position.x every new card
+      gridPosition += Vector2(spacer + cardSize, 0);
+    }
+  }
+
+  void buttonToggled(Color colour, bool pressedDown) {
+    if (pressedDown) {
+      coloursChosen.add(colour);
+    } else {
+      coloursChosen.remove(colour);
+    }
+
+    if (coloursChosen.length > 0) {
+      var newColour = mix(coloursChosen);
+      player.updateColour(newColour);
+    } else {
+      var newColour = Colors.white;
+      player.updateColour(newColour);
+    }
+
+  }
+
+  Color mix(List<Color> coloursChosen) {
+    double r = 0;
+    double g = 0;
+    double b = 0;
+
+    for (Color colour in coloursChosen) {
+      r += colour.red;
+      g += colour.green;
+      b += colour.blue;
+    }
+    r = r / coloursChosen.length;
+    g = g / coloursChosen.length;
+    b = b / coloursChosen.length;
+
+    return Color.fromRGBO(r.toInt(), g.toInt(), b.toInt(), 1);
+  }
+
+  @override
+  Future<void> onLoad() async {
+    squarePos = Rect.fromLTWH(size.x, 0, 10, 100);
+
+    // create and add in the player component
+    calScreenSize();
+    var playerX = (screenSize.width / 4 ).floorToDouble();
+    var playerY = (screenSize.height / 4 ).floorToDouble();
+    player = Player(Vector2(playerX, playerY), Vector2(20, 20), Colors.white);
+    add(player);
+
+    //add grid
+    addGrid();
+
+    return super.onLoad();
+  }
+
   @override
   void update(double dt) {
-    super.update(dt);
     squarePos = squarePos.translate(squareSpeed * squareDirection * dt, 0);
 
     if (squarePos.left < 0) {
       squarePos = Rect.fromLTWH(size.x, 0, 10, 100);
     }
+
+    super.update(dt);
   }
 
   @override
   void render(Canvas canvas) {
-    super.render(canvas);
     canvas.drawRect(squarePos, squarePaint);
+
+    super.render(canvas);
   }
 
-  @override
-  void onTapUp(TapUpInfo event) {
-    if (overlays.isActive('PauseMenu')) {
-      overlays.remove("PauseMenu");
-      resumeEngine();
-    } else {
-      final pauseButtonLoc = pauseButtonPosition & pauseButtonSize;
-      // pause button pressed
-      pauseButtonPressed =
-          pauseButtonLoc.contains(event.eventPosition.game.toOffset());
-      if (pauseButtonPressed) {
-        pauseEngine();
-        overlays.add('PauseMenu');
-      }
-    }
+  Widget _buildHud() {
+    return IconButton(
+        icon: Icon(Icons.pause, color: Colors.white, size: 30),
+        onPressed: () {});
   }
 }
