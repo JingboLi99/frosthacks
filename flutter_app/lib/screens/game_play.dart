@@ -13,16 +13,16 @@ class GamePlay extends StatelessWidget {
 }
 
 class MyGame extends Game {
-  static const int squareSpeed = 400;
+  static const int squareSpeed = 200;
   Rect squarePos;
-  int squareDirection = 1;
+  int squareDirection = -1;
   MyGame() {
     _buildHud();
   }
 
   @override
   Future<void> onLoad() async {
-    squarePos = Rect.fromLTWH(0, 0, 100, 100);
+    squarePos = Rect.fromLTWH(size.x, 0, 10, 100);
   }
 
   static final squarePaint = BasicPalette.white.paint();
@@ -31,10 +31,8 @@ class MyGame extends Game {
   void update(double dt) {
     squarePos = squarePos.translate(squareSpeed * squareDirection * dt, 0);
 
-    if (squareDirection == 1 && squarePos.right > size.x) {
-      squareDirection = -1;
-    } else if (squareDirection == -1 && squarePos.left < 0) {
-      squareDirection = 1;
+    if (squarePos.left < 0) {
+      squarePos = Rect.fromLTWH(size.x, 0, 10, 100);
     }
   }
 
