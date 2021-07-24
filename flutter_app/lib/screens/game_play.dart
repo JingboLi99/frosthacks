@@ -60,6 +60,11 @@ class MyGame extends BaseGame with TapDetector {
     if (squarePos.left < 0) {
       squarePos = Rect.fromLTWH(size.x, 0, 10, 100);
     }
+
+    /* if(isGameOver){
+      overlays.add('GameOver)
+      pauseEngine();
+    } */
   }
 
   @override
