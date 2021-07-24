@@ -37,6 +37,7 @@ class MyGame extends BaseGame with TapDetector {
   final pauseButtonPosition = Vector2(0, 0);
   final pauseButtonSize = Vector2(50, 50);
   bool pauseButtonPressed = false;
+  int score = 0;
 
   @override
   Future<void> onLoad() async {
@@ -56,10 +57,8 @@ class MyGame extends BaseGame with TapDetector {
     super.update(dt);
     squarePos = squarePos.translate(squareSpeed * squareDirection * dt, 0);
 
-    if (squareDirection == 1 && squarePos.right > size.x) {
-      squareDirection = -1;
-    } else if (squareDirection == -1 && squarePos.left < 0) {
-      squareDirection = 1;
+    if (squarePos.left < 0) {
+      squarePos = Rect.fromLTWH(size.x, 0, 10, 100);
     }
   }
 
