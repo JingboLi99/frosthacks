@@ -1,7 +1,6 @@
 import 'package:flame/game.dart';
-import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/screens/wall_obstacle_manager.dart';
+import 'package:flutter_app/Characters/wall_obstacle.dart';
 
 class GamePlay extends StatelessWidget {
   GamePlay({Key key}) : super(key: key);
@@ -20,11 +19,9 @@ class MyGame extends BaseGame {
 
   @override
   Future<void> onLoad() async {
-    var wall = WallObstacleManager();
+    WallObstacle wall = WallObstacle();
     add(wall);
   }
-
-  static final squarePaint = BasicPalette.white.paint();
 
   @override
   void update(double dt) {
