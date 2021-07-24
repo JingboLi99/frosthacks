@@ -1,6 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/screens/wall_obstacle_manager.dart';
 
 class GamePlay extends StatelessWidget {
   GamePlay({Key key}) : super(key: key);
@@ -12,33 +13,27 @@ class GamePlay extends StatelessWidget {
   }
 }
 
-class MyGame extends Game {
-  static const int squareSpeed = 200;
-  Rect squarePos;
-  int squareDirection = -1;
+class MyGame extends BaseGame {
   MyGame() {
     _buildHud();
   }
 
   @override
   Future<void> onLoad() async {
-    squarePos = Rect.fromLTWH(size.x, 0, 10, 100);
+    var wall = WallObstacleManager();
+    add(wall);
   }
 
   static final squarePaint = BasicPalette.white.paint();
 
   @override
   void update(double dt) {
-    squarePos = squarePos.translate(squareSpeed * squareDirection * dt, 0);
-
-    if (squarePos.left < 0) {
-      squarePos = Rect.fromLTWH(size.x, 0, 10, 100);
-    }
+    super.update(dt);
   }
 
   @override
   void render(Canvas canvas) {
-    canvas.drawRect(squarePos, squarePaint);
+    super.render(canvas);
   }
 
   Widget _buildHud() {
