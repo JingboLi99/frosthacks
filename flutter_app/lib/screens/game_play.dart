@@ -144,7 +144,7 @@ class MyGame extends BaseGame with HasTappableComponents {
   void addGrid() {
     double cardSize = screenSize.width / 12;
     double spacer = screenSize.width / 32;
-    double gridX = screenSize.width / 4;
+    double gridX = screenSize.width / 2.75;
     double gridY = screenSize.height / 4 * 3;
     Vector2 gridPosition = Vector2(gridX, gridY);
     List<Color> colors = [Colors.red, Colors.blue, Colors.yellow];
