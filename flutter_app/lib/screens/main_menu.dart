@@ -29,8 +29,6 @@ class MainMenuState extends State<MainMenu> {
                     child: Container(
                         width: MediaQuery.of(context).size.width * 0.85,
                         height: MediaQuery.of(context).size.width * 0.85,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.white, width: 3)),
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
