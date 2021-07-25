@@ -2,6 +2,8 @@
 
 Colour Match is a minimalistic endless runner game that is developed for mobile devices using the Android OS. We were inspired by the popularity of endless runner games like Flappy bird, Crossy Road and Colour Switch and wanted to do something similar.
 
+![Screenshot of Main Menu](https://github.com/R-chard/Colour-Match/blob/main/flutter_app/assets/screenshots/mainmenu.jpg?raw=true)
+
 ## How to install 🔧
 We have long term plans of deploying the app onto the Google Play Store after improving the UI. However, currently it is only available if you clone our open-sourced repository here and then run the ```main.dart``` file as the entry point to our program.
 
@@ -9,7 +11,7 @@ We have long term plans of deploying the app onto the Google Play Store after im
 
 We did not add a tutorial because we felt that the interface of the game is intuitive enough on its own. The player controls the colour of a box using a combination of 3 coloured buttons at the bottom of the screen. Coloured wall obstacles are rapidly spawned and the user has to toggle the buttons in order to match his box with the colour of the incoming wall. Careful! Walls move faster and appear more frequently as your score increases.
 
-![Screenshot of gameplay](https://github.com/R-chard/Colour-Match/blob/main/flutter_app/assets/screenshots/gameplay.jpg?raw=true)
+![Screenshot of Game Play](https://github.com/R-chard/Colour-Match/blob/main/flutter_app/assets/screenshots/gameplay.jpg?raw=true)
 
 ## Tech Stack ️⚙️
 
