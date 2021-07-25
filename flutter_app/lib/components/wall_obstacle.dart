@@ -5,7 +5,7 @@ import 'package:flame/components.dart';
 
 class WallObstacle extends PositionComponent {
   static const double wallWidth = 10;
-  static const int wallSpeed = 100;
+  int wallSpeed = 125;
   int wallDirection = -1;
 
   Color color;
@@ -42,7 +42,8 @@ class WallObstacle extends PositionComponent {
   @override
   void update(double dt) {
     super.update(dt);
-    wallPos = wallPos.translate(wallSpeed * wallDirection * dt, 0);
+    wallPos =
+        wallPos.translate((wallSpeed + 15 * score) * wallDirection * dt, 0);
 
     if (wallPos.left <= 0) {
       shouldRemove = true;
