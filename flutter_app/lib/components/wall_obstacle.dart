@@ -16,13 +16,13 @@ class WallObstacle extends PositionComponent {
 
   Random random;
   List arrayOfColors = [
+    Color(0xffffffff),
     Color(0xfff44336),
     Color(0xff2196f3),
     Color(0xffffeb3b),
     Color(0xff8a6c94),
     Color(0xfff99738),
     Color(0xff90c097),
-    Color(0xffffffff),
     Color(0xffb19676),
   ];
 
@@ -51,12 +51,12 @@ class WallObstacle extends PositionComponent {
   }
 
   Color wallPaint() {
-    var difficultyLevel = score ~/ 10;
+    var difficultyLevel = score ~/ 6;
     if (difficultyLevel > 2) {
       difficultyLevel = 2;
     }
     var random = new Random();
-    int colorOptions = [3, 6, 8][difficultyLevel];
+    int colorOptions = [4, 7, 8][difficultyLevel];
     int colorSelector = random.nextInt(colorOptions);
     Color wallColor = arrayOfColors[colorSelector];
     return wallColor;
