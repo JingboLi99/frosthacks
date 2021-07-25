@@ -2,24 +2,38 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/components.dart';
-import 'package:flame/palette.dart';
 
 class WallObstacle extends PositionComponent {
   static const int wallSpeed = 100;
   int wallDirection = -1;
 
-  Color color;
+  Paint color;
   Vector2 position;
   Rect wallPos;
+  int levelOfDifficulty;
 
-  WallObstacle(Vector2 position) {
+  Random random;
+  List arrayOfColors = [
+    Color.fromRGBO(255, 0, 0, 1),
+    Color.fromRGBO(0, 255, 0, 1),
+    Color.fromRGBO(0, 0, 255, 1),
+    Color.fromRGBO(255, 255, 0, 1),
+    Color.fromRGBO(255, 0, 255, 1),
+    Color.fromRGBO(0, 255, 255, 1),
+    Color.fromRGBO(255, 255, 255, 1),
+    Color.fromRGBO(0, 0, 0, 1),
+    Color.fromRGBO(128, 128, 128, 1)
+  ];
+
+  WallObstacle(Vector2 position, int levelOfDifficulty) {
     this.position = position;
+    this.levelOfDifficulty = levelOfDifficulty;
   }
 
   @override
   Future<void> onLoad() async {
     wallPos = Rect.fromLTWH(position.x, position.y / 2, 10, 100);
-    print(position);
+    color = wallPaint();
   }
 
   @override
@@ -32,9 +46,17 @@ class WallObstacle extends PositionComponent {
     }
   }
 
+  Paint wallPaint() {
+    var random = new Random();
+    int colorSelector = random.nextInt(levelOfDifficulty * 3);
+    Color wallColor = arrayOfColors[colorSelector];
+    print(wallColor);
+    return Paint()..color = wallColor;
+  }
+
   @override
   void render(Canvas canvas) {
-    canvas.drawRect(wallPos, BasicPalette.white.paint());
+    canvas.drawRect(wallPos, color);
     super.render(canvas);
   }
 }

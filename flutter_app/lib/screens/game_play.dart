@@ -14,6 +14,7 @@ class GamePlay extends StatelessWidget {
 
 class MyGame extends BaseGame {
   Size screenSize;
+  int difficultyLevel = 2;
 
   MyGame() {
     _buildHud();
@@ -26,7 +27,7 @@ class MyGame extends BaseGame {
   @override
   Future<void> onLoad() async {
     calScreenSize();
-    WallObstacle wall = WallObstacle(Vector2(screenSize.width.floorToDouble(), screenSize.height.floorToDouble()));
+    WallObstacle wall = WallObstacle(Vector2(screenSize.width.floorToDouble(), screenSize.height.floorToDouble()), difficultyLevel);
     add(wall);
   }
 
