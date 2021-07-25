@@ -14,14 +14,14 @@ class WallObstacle extends PositionComponent {
 
   Random random;
   List arrayOfColors = [
-    Color.fromRGBO(255, 0, 0, 1),
-    Color.fromRGBO(0, 255, 0, 1),
-    Color.fromRGBO(0, 0, 255, 1),
-    Color.fromRGBO(255, 255, 0, 1),
-    Color.fromRGBO(255, 0, 255, 1),
-    Color.fromRGBO(0, 255, 255, 1),
-    Color.fromRGBO(255, 255, 255, 1),
-    Color.fromRGBO(0, 0, 0, 1),
+    Color(0xfff44336),
+    Color(0xff2196f3),
+    Color(0xffffeb3b),
+    Color(0xff8a6c94),
+    Color(0xfff99738),
+    Color(0xff90c097),
+    Color(0xffffffff),
+    Color(0xffb19676),
   ];
 
   WallObstacle(Vector2 position, int levelOfDifficulty) {
