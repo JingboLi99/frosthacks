@@ -2,16 +2,40 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/components/button.dart';
+import 'package:flutter_app/components/pause_button.dart';
 import 'package:flutter_app/components/player.dart';
 
 class GamePlay extends StatelessWidget {
   GamePlay({Key key}) : super(key: key);
   final myGame = MyGame();
 
+  Widget pauseMenuBuilder(BuildContext buildContext, MyGame game) {
+    return Center(
+        child: Container(
+            width: 200,
+            color: const Color(0XFFFF0000),
+            child: Card(
+                child: Column(children: [
+              Text("Paused"),
+              ElevatedButton(
+                  child: Text("Resume", style: TextStyle(fontSize: 28)),
+                  onPressed: () {
+                    game.overlays.remove("PauseMenu");
+                    game.resumeEngine();
+                  }),
+              ElevatedButton(
+                  child: Text("Exit", style: TextStyle(fontSize: 28)),
+                  onPressed: SystemNavigator.pop),
+            ]))));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: GameWidget(game: myGame));
+    return Scaffold(
+        body: GameWidget(
+            game: myGame, overlayBuilderMap: {'PauseMenu': pauseMenuBuilder}));
   }
 }
 
@@ -26,18 +50,22 @@ class MyGame extends BaseGame with HasTappableComponents {
   List<Button> grid = [];
   List<Color> coloursChosen = [];
 
-  static const int squareSpeed = 200;
-  Rect squarePos;
-  int squareDirection = -1;
-  MyGame() {
-    _buildHud();
-  }
+  // for the pause button
+  SpriteComponent pauseButton;
+  int score = 0;
 
   static final squarePaint = BasicPalette.white.paint();
 
   //to calculate screen size
   void calScreenSize() {
     screenSize = Size(canvasSize.toOffset().dx, canvasSize.toOffset().dy);
+  }
+
+  Future<void> addPauseButton() async {
+    // renders pause button
+    final pauseSprite = await Sprite.load('pause.jpg');
+    pauseButton = PauseButton(pauseSprite);
+    add(pauseButton);
   }
 
   //grid creation method and helpers
@@ -94,8 +122,6 @@ class MyGame extends BaseGame with HasTappableComponents {
 
   @override
   Future<void> onLoad() async {
-    squarePos = Rect.fromLTWH(size.x, 0, 10, 100);
-
     // create and add in the player component
     calScreenSize();
     var playerX = (screenSize.width / 4).floorToDouble();
@@ -105,18 +131,13 @@ class MyGame extends BaseGame with HasTappableComponents {
 
     //add grid
     addGrid();
+    addPauseButton();
 
     return super.onLoad();
   }
 
   @override
   void update(double dt) {
-    squarePos = squarePos.translate(squareSpeed * squareDirection * dt, 0);
-
-    if (squarePos.left < 0) {
-      squarePos = Rect.fromLTWH(size.x, 0, 10, 100);
-    }
-
     /* if(isGameOver){
       overlays.add('GameOver)
       pauseEngine();
@@ -127,14 +148,6 @@ class MyGame extends BaseGame with HasTappableComponents {
 
   @override
   void render(Canvas canvas) {
-    canvas.drawRect(squarePos, squarePaint);
-
     super.render(canvas);
-  }
-
-  Widget _buildHud() {
-    return IconButton(
-        icon: Icon(Icons.pause, color: Colors.white, size: 30),
-        onPressed: () {});
   }
 }
