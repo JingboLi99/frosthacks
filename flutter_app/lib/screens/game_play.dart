@@ -241,24 +241,26 @@ class MyGame extends BaseGame with HasTappableComponents {
       nearestWallIndex = 0;
     }
 
-    if (wallArray[nearestWallIndex].wallPos.left <=
-        player.position.x + player.size.x) {
-      if (wallArray[nearestWallIndex].color == player.colour) {
-        score += 1;
-        wallArray.removeAt(nearestWallIndex);
-        scoreCounter.text = score.toString();
-      } else {
-        overlays.add('GameOver');
-        pauseEngine();
-        SaveData.saveHighScore(score);
+    if (wallArray.length > 0) {
+      if (wallArray[nearestWallIndex].wallPos.left <=
+          player.position.x + player.size.x) {
+        if (wallArray[nearestWallIndex].color == player.colour) {
+          score += 1;
+          wallArray.removeAt(nearestWallIndex);
+          scoreCounter.text = score.toString();
+        } else {
+          overlays.add('GameOver');
+          pauseEngine();
+          SaveData.saveHighScore(score);
+        }
       }
-    }
 
-    // prevents overtaking
-    for (int i = 0; i < wallArray.length; i++) {
-      if (wallArray[i].wallPos.left <
-          wallArray[nearestWallIndex].wallPos.left) {
-        nearestWallIndex = i;
+      // prevents overtaking
+      for (int i = 0; i < wallArray.length; i++) {
+        if (wallArray[i].wallPos.left <
+            wallArray[nearestWallIndex].wallPos.left) {
+          nearestWallIndex = i;
+        }
       }
     }
 
