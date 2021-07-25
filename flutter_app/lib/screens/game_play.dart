@@ -56,7 +56,7 @@ class MyGame extends BaseGame with HasTappableComponents {
   int score = 0;
   double elapsedTime = 0;
   int wallTimeInterval = 4;
-  List wallArray = [];
+  List<WallObstacle> wallArray = [];
 
   //to calculate screen size
   void calScreenSize() {
@@ -163,6 +163,10 @@ class MyGame extends BaseGame with HasTappableComponents {
       add(wall);
       wallArray.add(wall);
       elapsedTime = 0;
+      print(wallArray);
+    }
+    if (wallArray[0].wallPos.left <= 5) {
+      wallArray.removeAt(0);
     }
 
     super.update(dt);
