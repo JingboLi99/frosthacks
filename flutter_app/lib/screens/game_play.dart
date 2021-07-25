@@ -35,20 +35,20 @@ class GamePlayState extends State<GamePlay> {
                     padding: EdgeInsets.symmetric(vertical: 10),
                   ),
                   ElevatedButton(
-                      child: Text("Resume", style: TextStyle(fontSize: 28)),
+                      child: Text("Resume", style: TextStyle(fontSize: 26)),
                       onPressed: () {
                         game.overlays.remove("PauseMenu");
                         game.resumeEngine();
                       }),
                   ElevatedButton(
-                      child: Text("Restart", style: TextStyle(fontSize: 28)),
+                      child: Text("Restart", style: TextStyle(fontSize: 26)),
                       onPressed: () => {
                             setState(() {
                               myGame = MyGame();
                             })
                           }),
                   ElevatedButton(
-                      child: Text("Main Menu", style: TextStyle(fontSize: 28)),
+                      child: Text("Main Menu", style: TextStyle(fontSize: 26)),
                       onPressed: () {
                         Navigator.of(context).pushReplacement(MaterialPageRoute(
                             builder: (context) => MainMenu()));
@@ -71,14 +71,14 @@ class GamePlayState extends State<GamePlay> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                          Text("Game Over!", style: TextStyle(fontSize: 40)),
+                          Text("Game Over!", style: TextStyle(fontSize: 35)),
                           Text("Your score: " + game.score.toString(),
-                              style: TextStyle(fontSize: 28)),
+                              style: TextStyle(fontSize: 26)),
                           Text("Highscore: " + snapshot.data.toString(),
-                              style: TextStyle(fontSize: 28)),
+                              style: TextStyle(fontSize: 26)),
                           ElevatedButton(
                               child: Text("Restart",
-                                  style: TextStyle(fontSize: 28)),
+                                  style: TextStyle(fontSize: 26)),
                               onPressed: () => {
                                     setState(() {
                                       myGame = MyGame();
@@ -86,7 +86,7 @@ class GamePlayState extends State<GamePlay> {
                                   }),
                           ElevatedButton(
                               child: Text("Main Menu",
-                                  style: TextStyle(fontSize: 28)),
+                                  style: TextStyle(fontSize: 26)),
                               onPressed: () {
                                 Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
@@ -124,8 +124,9 @@ class MyGame extends BaseGame with HasTappableComponents {
 
   //For wall obstacles
   double elapsedTime = 0;
-  static const double baseWallTimeInterval = 4;
+  static const double baseWallTimeInterval = 3.3;
   List<WallObstacle> wallArray = [];
+  int nearestWallIndex;
 
   //to calculate screen size
   void calScreenSize() {
@@ -220,7 +221,8 @@ class MyGame extends BaseGame with HasTappableComponents {
     double wallHeight = (screenSize.height / 3).floorToDouble();
     WallObstacle wall = WallObstacle(
         Vector2(screenSize.width.floorToDouble(),
-            (screenSize.height / 2.5).floorToDouble()), wallHeight,
+            (screenSize.height / 2.5).floorToDouble()),
+        wallHeight,
         score);
     add(wall);
     wallArray.add(wall);
@@ -235,24 +237,45 @@ class MyGame extends BaseGame with HasTappableComponents {
 
   @override
   void update(double dt) {
-    if (wallArray[0].wallPos.left <= player.position.x + player.size.x) {
-      if (wallArray[0].color == player.colour) {
-        score += 1;
-        wallArray.removeAt(0);
-        scoreCounter.text = score.toString();
-      } else {
-        overlays.add('GameOver');
-        pauseEngine();
-        SaveData.saveHighScore(score);
+    if (nearestWallIndex == null) {
+      nearestWallIndex = 0;
+    }
+
+    if (wallArray.length > 0) {
+      if (wallArray[nearestWallIndex].wallPos.left <=
+          player.position.x + player.size.x) {
+        if (wallArray[nearestWallIndex].color == player.colour) {
+          score += 1;
+          wallArray.removeAt(nearestWallIndex);
+          scoreCounter.text = score.toString();
+        } else {
+          overlays.add('GameOver');
+          pauseEngine();
+          SaveData.saveHighScore(score);
+        }
+      }
+
+      // prevents overtaking
+      for (int i = 0; i < wallArray.length; i++) {
+        if (wallArray[i].wallPos.left <
+            wallArray[nearestWallIndex].wallPos.left) {
+          nearestWallIndex = i;
+        }
       }
     }
 
     elapsedTime += dt;
-    var wallTimeInterval = baseWallTimeInterval - (score * 0.1);
-    double wallHeight = (screenSize.height / 3 ).floorToDouble();
+    var wallTimeInterval = baseWallTimeInterval - (score * 0.2);
+    if (wallTimeInterval < 1) {
+      wallTimeInterval = 1;
+    }
+    double wallHeight = (screenSize.height / 3).floorToDouble();
     if (elapsedTime > wallTimeInterval) {
       // add wall obstacles
-      WallObstacle wall = WallObstacle(Vector2(screenSize.width.floorToDouble(),(screenSize.height / 2.5).floorToDouble()), wallHeight,
+      WallObstacle wall = WallObstacle(
+          Vector2(screenSize.width.floorToDouble(),
+              (screenSize.height / 2.5).floorToDouble()),
+          wallHeight,
           score);
       add(wall);
       wallArray.add(wall);
