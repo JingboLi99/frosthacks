@@ -1,6 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/palette.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/components/button.dart';
@@ -15,8 +16,8 @@ class GamePlay extends StatelessWidget {
   Widget pauseMenuBuilder(BuildContext buildContext, MyGame game) {
     return Center(
         child: Container(
-            width: 200,
             height: 200,
+            width: 200,
             color: const Color(0XFFFF0000),
             child: Card(
                 child: Column(children: [
@@ -33,11 +34,29 @@ class GamePlay extends StatelessWidget {
             ]))));
   }
 
+  Widget gameOverBuilder(BuildContext buildContext, MyGame game) {
+    return Center(
+        child: Container(
+            height: 200,
+            width: 200,
+            color: const Color(0XFFFF0000),
+            child: Card(
+                child: Column(children: [
+              Text("Highscore: " + game.score.toString(),
+                  style: TextStyle(fontSize: 28)),
+              ElevatedButton(
+                  child: Text("Play Again", style: TextStyle(fontSize: 28)),
+                  onPressed: () => {game.resumeEngine()}),
+            ]))));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: GameWidget(
-            game: myGame, overlayBuilderMap: {'PauseMenu': pauseMenuBuilder}));
+        body: GameWidget(game: myGame, overlayBuilderMap: {
+      'PauseMenu': pauseMenuBuilder,
+      'GameOver': gameOverBuilder
+    }));
   }
 }
 
@@ -45,6 +64,7 @@ class MyGame extends BaseGame with HasTappableComponents {
   //For the Player
   Size screenSize;
   Player player;
+  WallObstacle wall;
 
   //For the Grid
   double cardSize = 60;
@@ -54,6 +74,8 @@ class MyGame extends BaseGame with HasTappableComponents {
 
   //For wall obstacles
   int difficultyLevel = 1;
+
+  TextComponent scoreCounter;
   int score = 0;
 
   static final squarePaint = BasicPalette.white.paint();
@@ -87,6 +109,17 @@ class MyGame extends BaseGame with HasTappableComponents {
       //increase position.x every new card
       gridPosition += Vector2(spacer + cardSize, 0);
     }
+  }
+
+  void addScoreCounter() {
+    scoreCounter = TextComponent(score.toString(),
+        textRenderer: TextPaint(
+            config: TextPaintConfig(
+                fontSize: 50.0,
+                fontFamily: 'Awesome Font',
+                color: Colors.white)));
+    scoreCounter.position = Vector2(screenSize.width / 2, 30);
+    add(scoreCounter);
   }
 
   void buttonToggled(Color colour, bool pressedDown) {
@@ -133,7 +166,7 @@ class MyGame extends BaseGame with HasTappableComponents {
     add(player);
 
     // add wall obstacles
-    WallObstacle wall = WallObstacle(
+    wall = WallObstacle(
         Vector2(screenSize.width.floorToDouble(),
             screenSize.height.floorToDouble()),
         difficultyLevel);
@@ -143,19 +176,22 @@ class MyGame extends BaseGame with HasTappableComponents {
     addGrid();
     // add pause button
     addPauseButton();
+
+    addScoreCounter();
   }
 
   @override
   void update(double dt) {
-    /* if(isGameOver){
-      overlays.add('GameOver)
-      pauseEngine();
-    } */
-    super.update(dt);
-  }
+    if (wall.wallPos.left <= player.position.x + player.size.x) {
+      if (wall.color == player.colour) {
+        score += 1;
+        scoreCounter.text = score.toString();
+      } else {
+        overlays.add('GameOver');
+        pauseEngine();
+      }
+    }
 
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
+    super.update(dt);
   }
 }
