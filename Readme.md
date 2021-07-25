@@ -9,6 +9,8 @@ We have long term plans of deploying the app onto the Google Play Store after im
 
 We did not add a tutorial because we felt that the interface of the game is intuitive enough on its own. The player controls the colour of a box using a combination of 3 coloured buttons at the bottom of the screen. Coloured wall obstacles are rapidly spawned and the user has to toggle the buttons in order to match his box with the colour of the incoming wall. Careful! Walls move faster and appear more frequently as your score increases.
 
+![Screenshot of gameplay](https://github.com/R-chard/Colour-Match/blob/main/flutter_app/assets/screenshots/gameplay.jpg?raw=true)
+
 ## Tech Stack ️⚙️
 
 Colour Match was developed using the dart programming language and  the following frameworks:
