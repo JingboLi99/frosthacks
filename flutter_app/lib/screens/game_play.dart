@@ -54,6 +54,9 @@ class MyGame extends BaseGame with HasTappableComponents {
   //For wall obstacles
   int difficultyLevel = 1;
   int score = 0;
+  double elapsedTime = 0;
+  int wallTimeInterval = 4;
+  List wallArray = [];
 
   //to calculate screen size
   void calScreenSize() {
@@ -135,6 +138,8 @@ class MyGame extends BaseGame with HasTappableComponents {
             screenSize.height.floorToDouble()),
         difficultyLevel);
     add(wall);
+    wallArray.add(wall);
+    print(wallArray);
 
     //add grid
     addGrid();
@@ -148,6 +153,18 @@ class MyGame extends BaseGame with HasTappableComponents {
       overlays.add('GameOver)
       pauseEngine();
     } */
+    elapsedTime += dt;
+    if (elapsedTime > wallTimeInterval) {
+      // add wall obstacles
+      WallObstacle wall = WallObstacle(
+          Vector2(screenSize.width.floorToDouble(),
+              screenSize.height.floorToDouble()),
+          difficultyLevel);
+      add(wall);
+      wallArray.add(wall);
+      elapsedTime = 0;
+    }
+
     super.update(dt);
   }
 

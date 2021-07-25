@@ -50,7 +50,6 @@ class WallObstacle extends PositionComponent {
     int colorOptions = [3, 6, 8][levelOfDifficulty - 1];
     int colorSelector = random.nextInt(colorOptions);
     Color wallColor = arrayOfColors[colorSelector];
-    print(wallColor);
     return Paint()..color = wallColor;
   }
 
