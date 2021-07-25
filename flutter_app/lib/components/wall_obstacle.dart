@@ -49,8 +49,12 @@ class WallObstacle extends PositionComponent {
   }
 
   Color wallPaint() {
+    var difficultyLevel = score ~/ 10;
+    if (difficultyLevel > 2) {
+      difficultyLevel = 2;
+    }
     var random = new Random();
-    int colorOptions = [3, 6, 8][1];
+    int colorOptions = [3, 6, 8][difficultyLevel];
     int colorSelector = random.nextInt(colorOptions);
     Color wallColor = arrayOfColors[colorSelector];
     return wallColor;

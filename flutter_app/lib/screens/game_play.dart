@@ -91,7 +91,7 @@ class MyGame extends BaseGame with HasTappableComponents {
 
   //For wall obstacles
   double elapsedTime = 0;
-  int wallTimeInterval = 4;
+  static const double baseWallTimeInterval = 4;
   List<WallObstacle> wallArray = [];
 
   //to calculate screen size
@@ -213,6 +213,7 @@ class MyGame extends BaseGame with HasTappableComponents {
     }
 
     elapsedTime += dt;
+    var wallTimeInterval = baseWallTimeInterval - (score * 0.1);
     if (elapsedTime > wallTimeInterval) {
       // add wall obstacles
       WallObstacle wall = WallObstacle(
