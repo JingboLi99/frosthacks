@@ -4,13 +4,15 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 
 class WallObstacle extends PositionComponent {
+  static const double wallHeight = 100;
+  static const double wallWidth = 10;
   static const int wallSpeed = 100;
   int wallDirection = -1;
 
   Paint color;
   Vector2 position;
   Rect wallPos;
-  int levelOfDifficulty;
+  int score;
 
   Random random;
   List arrayOfColors = [
@@ -24,14 +26,14 @@ class WallObstacle extends PositionComponent {
     Color(0xffb19676),
   ];
 
-  WallObstacle(Vector2 position, int levelOfDifficulty) {
+  WallObstacle(Vector2 position, int score) {
     this.position = position;
-    this.levelOfDifficulty = levelOfDifficulty;
+    this.score = score;
   }
 
   @override
   Future<void> onLoad() async {
-    wallPos = Rect.fromLTWH(position.x, position.y / 2, 10, 100);
+    wallPos = Rect.fromLTWH(position.x, position.y - wallHeight / 1.5, wallWidth, wallHeight);
     color = wallPaint();
   }
 
@@ -47,7 +49,7 @@ class WallObstacle extends PositionComponent {
 
   Paint wallPaint() {
     var random = new Random();
-    int colorOptions = [3, 6, 8][levelOfDifficulty - 1];
+    int colorOptions = [3, 6, 8][1];
     int colorSelector = random.nextInt(colorOptions);
     Color wallColor = arrayOfColors[colorSelector];
     return Paint()..color = wallColor;

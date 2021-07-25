@@ -52,7 +52,6 @@ class MyGame extends BaseGame with HasTappableComponents {
   List<Color> coloursChosen = [];
 
   //For wall obstacles
-  int difficultyLevel = 1;
   int score = 0;
   double elapsedTime = 0;
   int wallTimeInterval = 4;
@@ -135,8 +134,8 @@ class MyGame extends BaseGame with HasTappableComponents {
     // add wall obstacles
     WallObstacle wall = WallObstacle(
         Vector2(screenSize.width.floorToDouble(),
-            screenSize.height.floorToDouble()),
-        difficultyLevel);
+            (screenSize.height / 4).floorToDouble()),
+        score);
     add(wall);
     wallArray.add(wall);
     print(wallArray);
@@ -158,17 +157,21 @@ class MyGame extends BaseGame with HasTappableComponents {
       // add wall obstacles
       WallObstacle wall = WallObstacle(
           Vector2(screenSize.width.floorToDouble(),
-              screenSize.height.floorToDouble()),
-          difficultyLevel);
+              (screenSize.height / 4).floorToDouble()),
+          score);
       add(wall);
       wallArray.add(wall);
       elapsedTime = 0;
       print(wallArray);
     }
-    if (wallArray[0].wallPos.left <= 5) {
-      wallArray.removeAt(0);
+    if (wallArray.length > 0) {
+      for (var wall = 0; wall < wallArray.length; wall++) {
+        if (wallArray[wall].wallPos.left <= 0) {
+          wallArray.removeAt(wall);
+          score += 1;
+        }
+      }
     }
-
     super.update(dt);
   }
 
