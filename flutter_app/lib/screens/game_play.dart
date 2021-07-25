@@ -177,16 +177,17 @@ class MyGame extends BaseGame with HasTappableComponents {
     // create and add in the player component
     calScreenSize();
     var playerX = (screenSize.width / 4).floorToDouble();
-    var playerY = (screenSize.height / 4).floorToDouble();
+    var playerY = (screenSize.height / 3.5).floorToDouble();
     var playerSize = (screenSize.width / 18).floorToDouble();
     player = Player(
         Vector2(playerX, playerY), Vector2.all(playerSize), Colors.white);
     add(player);
 
     // add wall obstacles
+    double wallHeight = (screenSize.height / 3 * 2).floorToDouble();
     WallObstacle wall = WallObstacle(
         Vector2(screenSize.width.floorToDouble(),
-            (screenSize.height / 4).floorToDouble()),
+            (screenSize.height / 4).floorToDouble()), wallHeight,
         score);
     add(wall);
     wallArray.add(wall);
@@ -214,11 +215,10 @@ class MyGame extends BaseGame with HasTappableComponents {
 
     elapsedTime += dt;
     var wallTimeInterval = baseWallTimeInterval - (score * 0.1);
+    double wallHeight = (screenSize.height / 3 * 2).floorToDouble();
     if (elapsedTime > wallTimeInterval) {
       // add wall obstacles
-      WallObstacle wall = WallObstacle(
-          Vector2(screenSize.width.floorToDouble(),
-              (screenSize.height / 4).floorToDouble()),
+      WallObstacle wall = WallObstacle(Vector2(screenSize.width.floorToDouble(),(screenSize.height / 4).floorToDouble()), wallHeight,
           score);
       add(wall);
       wallArray.add(wall);

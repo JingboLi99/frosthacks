@@ -4,13 +4,13 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 
 class WallObstacle extends PositionComponent {
-  static const double wallHeight = 100;
   static const double wallWidth = 10;
   static const int wallSpeed = 100;
   int wallDirection = -1;
 
   Color color;
   Vector2 position;
+  double wallHeight;
   Rect wallPos;
   int score;
 
@@ -26,8 +26,9 @@ class WallObstacle extends PositionComponent {
     Color(0xffb19676),
   ];
 
-  WallObstacle(Vector2 position, int score) {
+  WallObstacle(Vector2 position, double wallHeight, int score) {
     this.position = position;
+    this.wallHeight = wallHeight;
     this.score = score;
   }
 
