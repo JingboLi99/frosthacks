@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app/components/button.dart';
 import 'package:flutter_app/components/pause_button.dart';
 import 'package:flutter_app/components/player.dart';
+import 'package:flutter_app/components/wall_obstacle.dart';
 
 class GamePlay extends StatelessWidget {
   GamePlay({Key key}) : super(key: key);
@@ -15,10 +16,11 @@ class GamePlay extends StatelessWidget {
     return Center(
         child: Container(
             width: 200,
+            height: 200,
             color: const Color(0XFFFF0000),
             child: Card(
                 child: Column(children: [
-              Text("Paused"),
+              Text("Paused", style: TextStyle(fontSize: 28)),
               ElevatedButton(
                   child: Text("Resume", style: TextStyle(fontSize: 28)),
                   onPressed: () {
@@ -50,8 +52,8 @@ class MyGame extends BaseGame with HasTappableComponents {
   List<Button> grid = [];
   List<Color> coloursChosen = [];
 
-  // for the pause button
-  SpriteComponent pauseButton;
+  //For wall obstacles
+  int difficultyLevel = 1;
   int score = 0;
 
   static final squarePaint = BasicPalette.white.paint();
@@ -64,7 +66,7 @@ class MyGame extends BaseGame with HasTappableComponents {
   Future<void> addPauseButton() async {
     // renders pause button
     final pauseSprite = await Sprite.load('pause.jpg');
-    pauseButton = PauseButton(pauseSprite);
+    SpriteComponent pauseButton = PauseButton(pauseSprite);
     add(pauseButton);
   }
 
@@ -122,6 +124,7 @@ class MyGame extends BaseGame with HasTappableComponents {
 
   @override
   Future<void> onLoad() async {
+    super.onLoad();
     // create and add in the player component
     calScreenSize();
     var playerX = (screenSize.width / 4).floorToDouble();
@@ -129,11 +132,17 @@ class MyGame extends BaseGame with HasTappableComponents {
     player = Player(Vector2(playerX, playerY), Vector2(20, 20), Colors.white);
     add(player);
 
+    // add wall obstacles
+    WallObstacle wall = WallObstacle(
+        Vector2(screenSize.width.floorToDouble(),
+            screenSize.height.floorToDouble()),
+        difficultyLevel);
+    add(wall);
+
     //add grid
     addGrid();
+    // add pause button
     addPauseButton();
-
-    return super.onLoad();
   }
 
   @override
@@ -142,7 +151,6 @@ class MyGame extends BaseGame with HasTappableComponents {
       overlays.add('GameOver)
       pauseEngine();
     } */
-
     super.update(dt);
   }
 
