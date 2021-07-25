@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/screens/game_play.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_app/util/save_data.dart';
 
 class MainMenu extends StatefulWidget {
   const MainMenu({Key key}) : super(key: key);
@@ -11,23 +11,16 @@ class MainMenu extends StatefulWidget {
 }
 
 class MainMenuState extends State<MainMenu> {
-  var prefs;
-
-  Future<int> getHighScore() async {
-    prefs = await SharedPreferences.getInstance();
-    return prefs.getInt("highscore") ?? 0;
-  }
-
   @override
   void initState() {
     super.initState();
-    getHighScore();
+    SaveData.getHighScore();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: getHighScore(),
+        future: SaveData.getHighScore(),
         builder: (context, AsyncSnapshot<int> snapshot) {
           if (snapshot.hasData) {
             return Center(

@@ -3,7 +3,7 @@ import 'package:flame/gestures.dart';
 import 'package:flutter_app/screens/game_play.dart';
 
 class PauseButton extends SpriteComponent with Tappable, HasGameRef<MyGame> {
-  final String pause_icon = "pause.jpg";
+  final String pause_icon = "pause.png";
   static var pauseButtonSize = Vector2(50.0, 50.0);
   static var pauseButtonPosition = Vector2(0, 0);
   var pauseComponent;

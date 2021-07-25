@@ -65,9 +65,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-     - family: AudioWide
+     - family: Varela Round
        fonts:
-          - asset: assets/fonts/AudioWide/AudioWide-Regular.ttf
+          - asset: assets/fonts/Varela_Round/VarelaRound-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

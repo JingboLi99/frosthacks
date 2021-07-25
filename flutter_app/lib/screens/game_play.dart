@@ -2,11 +2,12 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_app/components/button.dart';
 import 'package:flutter_app/components/pause_button.dart';
 import 'package:flutter_app/components/player.dart';
 import 'package:flutter_app/components/wall_obstacle.dart';
+import 'package:flutter_app/screens/main_menu.dart';
+import 'package:flutter_app/util/save_data.dart';
 
 class GamePlay extends StatefulWidget {
   GamePlay({Key key}) : super(key: key);
@@ -21,49 +22,81 @@ class GamePlayState extends State<GamePlay> {
   Widget pauseMenuBuilder(BuildContext buildContext, MyGame game) {
     return Center(
         child: Container(
-            height: 200,
-            width: 200,
+            height: 250,
+            width: 300,
             color: const Color(0XFFFF0000),
             child: Card(
-                child: Column(children: [
-              Text("Paused", style: TextStyle(fontSize: 28)),
-              ElevatedButton(
-                  child: Text("Resume", style: TextStyle(fontSize: 28)),
-                  onPressed: () {
-                    game.overlays.remove("PauseMenu");
-                    game.resumeEngine();
-                  }),
-              ElevatedButton(
-                  child: Text("Restart", style: TextStyle(fontSize: 28)),
-                  onPressed: () => {
-                        setState(() {
-                          myGame = MyGame();
-                        })
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                  Text("Paused", style: TextStyle(fontSize: 40)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                  ),
+                  ElevatedButton(
+                      child: Text("Resume", style: TextStyle(fontSize: 28)),
+                      onPressed: () {
+                        game.overlays.remove("PauseMenu");
+                        game.resumeEngine();
                       }),
-              ElevatedButton(
-                  child: Text("Exit", style: TextStyle(fontSize: 28)),
-                  onPressed: SystemNavigator.pop),
-            ]))));
+                  ElevatedButton(
+                      child: Text("Restart", style: TextStyle(fontSize: 28)),
+                      onPressed: () => {
+                            setState(() {
+                              myGame = MyGame();
+                            })
+                          }),
+                  ElevatedButton(
+                      child: Text("Main Menu", style: TextStyle(fontSize: 28)),
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => MainMenu()));
+                      }),
+                ]))));
   }
 
   Widget gameOverBuilder(BuildContext buildContext, MyGame game) {
-    return Center(
-        child: Container(
-            height: 200,
-            width: 200,
-            color: const Color(0XFFFF0000),
-            child: Card(
-                child: Column(children: [
-              Text("Highscore: " + game.score.toString(),
-                  style: TextStyle(fontSize: 28)),
-              ElevatedButton(
-                  child: Text("Restart", style: TextStyle(fontSize: 28)),
-                  onPressed: () => {
-                        setState(() {
-                          myGame = MyGame();
-                        })
-                      }),
-            ]))));
+    return FutureBuilder(
+        future: SaveData.getHighScore(),
+        builder: (context, AsyncSnapshot<int> snapshot) {
+          if (snapshot.hasData) {
+            return Center(
+                child: Container(
+                    height: 250,
+                    width: 300,
+                    color: const Color(0XFFFF0000),
+                    child: Card(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                          Text("Game Over!", style: TextStyle(fontSize: 40)),
+                          Text("Your score: " + game.score.toString(),
+                              style: TextStyle(fontSize: 28)),
+                          Text("Highscore: " + snapshot.data.toString(),
+                              style: TextStyle(fontSize: 28)),
+                          ElevatedButton(
+                              child: Text("Restart",
+                                  style: TextStyle(fontSize: 28)),
+                              onPressed: () => {
+                                    setState(() {
+                                      myGame = MyGame();
+                                    })
+                                  }),
+                          ElevatedButton(
+                              child: Text("Main Menu",
+                                  style: TextStyle(fontSize: 28)),
+                              onPressed: () {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (context) => MainMenu()));
+                              })
+                        ]))));
+          } else {
+            return Center(child: Container(height: 200, width: 275));
+          }
+        });
   }
 
   @override
@@ -101,7 +134,7 @@ class MyGame extends BaseGame with HasTappableComponents {
 
   Future<void> addPauseButton() async {
     // renders pause button
-    final pauseSprite = await Sprite.load('pause.jpg');
+    final pauseSprite = await Sprite.load('pause.png');
     SpriteComponent pauseButton = PauseButton(pauseSprite);
     add(pauseButton);
   }
@@ -209,6 +242,7 @@ class MyGame extends BaseGame with HasTappableComponents {
       } else {
         overlays.add('GameOver');
         pauseEngine();
+        SaveData.saveHighScore(score);
       }
     }
 
