@@ -1,7 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/Characters/wall_obstacle.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/components/button.dart';
 import 'package:flutter_app/components/pause_button.dart';
@@ -55,8 +54,6 @@ class MyGame extends BaseGame with HasTappableComponents {
   //For wall obstacles
   int difficultyLevel = 1;
   int score = 0;
-
-  static final squarePaint = BasicPalette.white.paint();
 
   //to calculate screen size
   void calScreenSize() {
@@ -120,10 +117,6 @@ class MyGame extends BaseGame with HasTappableComponents {
     b = b / coloursChosen.length;
 
     return Color.fromRGBO(r.toInt(), g.toInt(), b.toInt(), 1);
-  }
-
-  void calScreenSize() {
-    screenSize = Size(canvasSize.toOffset().dx, canvasSize.toOffset().dy);
   }
 
   @override
