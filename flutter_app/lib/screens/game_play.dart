@@ -1,6 +1,5 @@
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
-import 'package:flame/palette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,8 +44,11 @@ class GamePlay extends StatelessWidget {
               Text("Highscore: " + game.score.toString(),
                   style: TextStyle(fontSize: 28)),
               ElevatedButton(
-                  child: Text("Play Again", style: TextStyle(fontSize: 28)),
-                  onPressed: () => {game.resumeEngine()}),
+                  child: Text("Play", style: TextStyle(fontSize: 28)),
+                  onPressed: () {
+                    Navigator.of(buildContext).pushReplacement(
+                        MaterialPageRoute(builder: (context) => GamePlay()));
+                  }),
             ]))));
   }
 
@@ -64,21 +66,19 @@ class MyGame extends BaseGame with HasTappableComponents {
   //For the Player
   Size screenSize;
   Player player;
-  WallObstacle wall;
 
   //For the Grid
-  double cardSize = 60;
-  double spacer = 20.0;
   List<Button> grid = [];
   List<Color> coloursChosen = [];
 
-  //For wall obstacles
-  int difficultyLevel = 1;
-
+  //For counting score
   TextComponent scoreCounter;
   int score = 0;
 
-  static final squarePaint = BasicPalette.white.paint();
+  //For wall obstacles
+  double elapsedTime = 0;
+  int wallTimeInterval = 4;
+  List<WallObstacle> wallArray = [];
 
   //to calculate screen size
   void calScreenSize() {
@@ -94,6 +94,8 @@ class MyGame extends BaseGame with HasTappableComponents {
 
   //grid creation method and helpers
   void addGrid() {
+    double cardSize = screenSize.width / 12;
+    double spacer = screenSize.width / 32;
     double gridX = screenSize.width / 4;
     double gridY = screenSize.height / 4 * 3;
     Vector2 gridPosition = Vector2(gridX, gridY);
@@ -162,15 +164,18 @@ class MyGame extends BaseGame with HasTappableComponents {
     calScreenSize();
     var playerX = (screenSize.width / 4).floorToDouble();
     var playerY = (screenSize.height / 4).floorToDouble();
-    player = Player(Vector2(playerX, playerY), Vector2(20, 20), Colors.white);
+    var playerSize = (screenSize.width / 18).floorToDouble();
+    player = Player(
+        Vector2(playerX, playerY), Vector2.all(playerSize), Colors.white);
     add(player);
 
     // add wall obstacles
-    wall = WallObstacle(
+    WallObstacle wall = WallObstacle(
         Vector2(screenSize.width.floorToDouble(),
-            screenSize.height.floorToDouble()),
-        difficultyLevel);
+            (screenSize.height / 4).floorToDouble()),
+        score);
     add(wall);
+    wallArray.add(wall);
 
     //add grid
     addGrid();
@@ -182,16 +187,30 @@ class MyGame extends BaseGame with HasTappableComponents {
 
   @override
   void update(double dt) {
-    if (wall.wallPos.left <= player.position.x + player.size.x) {
-      if (wall.color == player.colour) {
+    if (wallArray[0].wallPos.left <= player.position.x + player.size.x) {
+      if (wallArray[0].color == player.colour) {
         score += 1;
+        wallArray.removeAt(0);
         scoreCounter.text = score.toString();
       } else {
+        print(wallArray[0].color);
+        print(player.colour);
         overlays.add('GameOver');
         pauseEngine();
       }
     }
 
+    elapsedTime += dt;
+    if (elapsedTime > wallTimeInterval) {
+      // add wall obstacles
+      WallObstacle wall = WallObstacle(
+          Vector2(screenSize.width.floorToDouble(),
+              (screenSize.height / 4).floorToDouble()),
+          score);
+      add(wall);
+      wallArray.add(wall);
+      elapsedTime = 0;
+    }
     super.update(dt);
   }
 }

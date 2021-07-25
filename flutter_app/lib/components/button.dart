@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_app/screens/game_play.dart';
 
 class Button extends PositionComponent with Tappable, HasGameRef<MyGame>{
@@ -16,8 +17,19 @@ class Button extends PositionComponent with Tappable, HasGameRef<MyGame>{
 
   @override
   void render(Canvas canvas) {
-    var grid = Rect.fromLTWH(x, y, width, height);
-    canvas.drawRect(grid, Paint()..color = this.colour);
+    Color shadowColour = Colors.white;
+    double shadowBuffer = 2.0;
+
+    if (down) {
+      var grid = Rect.fromLTWH(x + shadowBuffer, y + shadowBuffer, width, height);
+      canvas.drawRect(grid, Paint()..color = this.colour);
+    } else {
+      var grid = Rect.fromLTWH(x, y, width, height);
+      var shadow = Rect.fromLTWH(x + shadowBuffer, y + shadowBuffer, width + shadowBuffer, height + shadowBuffer);
+      canvas.drawRect(shadow, Paint()..color = shadowColour);
+      canvas.drawRect(grid, Paint()..color = this.colour);
+    }
+
     super.render(canvas);
   }
 
