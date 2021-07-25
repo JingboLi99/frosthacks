@@ -46,8 +46,6 @@ class MyGame extends BaseGame with HasTappableComponents {
   Player player;
 
   //For the Grid
-  double cardSize = 60;
-  double spacer = 20.0;
   List<Button> grid = [];
   List<Color> coloursChosen = [];
 
@@ -72,6 +70,8 @@ class MyGame extends BaseGame with HasTappableComponents {
 
   //grid creation method and helpers
   void addGrid() {
+    double cardSize = screenSize.width / 12;
+    double spacer = screenSize.width / 32;
     double gridX = screenSize.width / 4;
     double gridY = screenSize.height / 4 * 3;
     Vector2 gridPosition = Vector2(gridX, gridY);
@@ -129,7 +129,8 @@ class MyGame extends BaseGame with HasTappableComponents {
     calScreenSize();
     var playerX = (screenSize.width / 4).floorToDouble();
     var playerY = (screenSize.height / 4).floorToDouble();
-    player = Player(Vector2(playerX, playerY), Vector2(20, 20), Colors.white);
+    var playerSize = (screenSize.width / 18).floorToDouble();
+    player = Player(Vector2(playerX, playerY), Vector2.all(playerSize), Colors.white);
     add(player);
 
     // add wall obstacles
