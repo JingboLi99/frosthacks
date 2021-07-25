@@ -8,9 +8,15 @@ import 'package:flutter_app/components/pause_button.dart';
 import 'package:flutter_app/components/player.dart';
 import 'package:flutter_app/components/wall_obstacle.dart';
 
-class GamePlay extends StatelessWidget {
+class GamePlay extends StatefulWidget {
   GamePlay({Key key}) : super(key: key);
-  final myGame = MyGame();
+
+  @override
+  GamePlayState createState() => GamePlayState();
+}
+
+class GamePlayState extends State<GamePlay> {
+  var myGame = MyGame();
 
   Widget pauseMenuBuilder(BuildContext buildContext, MyGame game) {
     return Center(
@@ -28,6 +34,13 @@ class GamePlay extends StatelessWidget {
                     game.resumeEngine();
                   }),
               ElevatedButton(
+                  child: Text("Restart", style: TextStyle(fontSize: 28)),
+                  onPressed: () => {
+                        setState(() {
+                          myGame = MyGame();
+                        })
+                      }),
+              ElevatedButton(
                   child: Text("Exit", style: TextStyle(fontSize: 28)),
                   onPressed: SystemNavigator.pop),
             ]))));
@@ -44,11 +57,12 @@ class GamePlay extends StatelessWidget {
               Text("Highscore: " + game.score.toString(),
                   style: TextStyle(fontSize: 28)),
               ElevatedButton(
-                  child: Text("Play", style: TextStyle(fontSize: 28)),
-                  onPressed: () {
-                    Navigator.of(buildContext).pushReplacement(
-                        MaterialPageRoute(builder: (context) => GamePlay()));
-                  }),
+                  child: Text("Restart", style: TextStyle(fontSize: 28)),
+                  onPressed: () => {
+                        setState(() {
+                          myGame = MyGame();
+                        })
+                      }),
             ]))));
   }
 
@@ -193,8 +207,6 @@ class MyGame extends BaseGame with HasTappableComponents {
         wallArray.removeAt(0);
         scoreCounter.text = score.toString();
       } else {
-        print(wallArray[0].color);
-        print(player.colour);
         overlays.add('GameOver');
         pauseEngine();
       }
