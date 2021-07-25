@@ -14,7 +14,7 @@ class GamePlay extends StatelessWidget {
 
 class MyGame extends BaseGame {
   Size screenSize;
-  int difficultyLevel = 2;
+  int difficultyLevel = 1;
 
   MyGame() {
     _buildHud();

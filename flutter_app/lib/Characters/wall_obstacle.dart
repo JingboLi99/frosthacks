@@ -22,7 +22,6 @@ class WallObstacle extends PositionComponent {
     Color.fromRGBO(0, 255, 255, 1),
     Color.fromRGBO(255, 255, 255, 1),
     Color.fromRGBO(0, 0, 0, 1),
-    Color.fromRGBO(128, 128, 128, 1)
   ];
 
   WallObstacle(Vector2 position, int levelOfDifficulty) {
@@ -48,7 +47,8 @@ class WallObstacle extends PositionComponent {
 
   Paint wallPaint() {
     var random = new Random();
-    int colorSelector = random.nextInt(levelOfDifficulty * 3);
+    int colorOptions = [3, 6, 8][levelOfDifficulty - 1];
+    int colorSelector = random.nextInt(colorOptions);
     Color wallColor = arrayOfColors[colorSelector];
     print(wallColor);
     return Paint()..color = wallColor;
