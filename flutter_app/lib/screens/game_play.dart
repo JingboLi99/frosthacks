@@ -184,10 +184,10 @@ class MyGame extends BaseGame with HasTappableComponents {
     add(player);
 
     // add wall obstacles
-    double wallHeight = (screenSize.height / 3 * 2).floorToDouble();
+    double wallHeight = (screenSize.height / 3).floorToDouble();
     WallObstacle wall = WallObstacle(
         Vector2(screenSize.width.floorToDouble(),
-            (screenSize.height / 4).floorToDouble()), wallHeight,
+            (screenSize.height / 2.5).floorToDouble()), wallHeight,
         score);
     add(wall);
     wallArray.add(wall);
@@ -215,10 +215,10 @@ class MyGame extends BaseGame with HasTappableComponents {
 
     elapsedTime += dt;
     var wallTimeInterval = baseWallTimeInterval - (score * 0.1);
-    double wallHeight = (screenSize.height / 3 * 2).floorToDouble();
+    double wallHeight = (screenSize.height / 3 ).floorToDouble();
     if (elapsedTime > wallTimeInterval) {
       // add wall obstacles
-      WallObstacle wall = WallObstacle(Vector2(screenSize.width.floorToDouble(),(screenSize.height / 4).floorToDouble()), wallHeight,
+      WallObstacle wall = WallObstacle(Vector2(screenSize.width.floorToDouble(),(screenSize.height / 2.5).floorToDouble()), wallHeight,
           score);
       add(wall);
       wallArray.add(wall);
