@@ -13,13 +13,20 @@ class GamePlay extends StatelessWidget {
 }
 
 class MyGame extends BaseGame {
+  Size screenSize;
+
   MyGame() {
     _buildHud();
   }
 
+  void calScreenSize() {
+    screenSize = Size(canvasSize.toOffset().dx, canvasSize.toOffset().dy);
+  }
+
   @override
   Future<void> onLoad() async {
-    WallObstacle wall = WallObstacle();
+    calScreenSize();
+    WallObstacle wall = WallObstacle(Vector2(screenSize.width.floorToDouble(), screenSize.height.floorToDouble()));
     add(wall);
   }
 

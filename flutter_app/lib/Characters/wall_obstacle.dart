@@ -1,19 +1,25 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/palette.dart';
-import 'package:flutter_app/screens/game_play.dart';
 
 class WallObstacle extends PositionComponent {
   static const int wallSpeed = 100;
-  static final wallPaint = BasicPalette.white.paint();
   int wallDirection = -1;
 
+  Color color;
+  Vector2 position;
   Rect wallPos;
+
+  WallObstacle(Vector2 position) {
+    this.position = position;
+  }
 
   @override
   Future<void> onLoad() async {
-    wallPos = Rect.fromLTWH(, 500, 10, 100);
+    wallPos = Rect.fromLTWH(position.x, position.y / 2, 10, 100);
+    print(position);
   }
 
   @override
@@ -21,14 +27,14 @@ class WallObstacle extends PositionComponent {
     super.update(dt);
     wallPos = wallPos.translate(wallSpeed * wallDirection * dt, 0);
 
-    if (wallPos.left < 0) {
-      wallPos = Rect.fromLTWH(0, size.y / 2, 10, 100);
+    if (wallPos.left <= 0) {
+      shouldRemove = true;
     }
   }
 
   @override
   void render(Canvas canvas) {
+    canvas.drawRect(wallPos, BasicPalette.white.paint());
     super.render(canvas);
-    canvas.drawRect(wallPos, wallPaint);
   }
 }
